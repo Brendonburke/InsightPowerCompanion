@@ -14,9 +14,10 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /* Main
-* TODO Real-time Graphing
+* TODO Real-time Graphing: DONE
 * TODO Add Button Interaction
-* TODO Update TextView Field*/
+* TODO Update TextView Field: DONE
+* TODO Raspberry PI communication*/
 public class MainActivity extends AppCompatActivity {
     Random out = new Random();
     private int time = 0;
