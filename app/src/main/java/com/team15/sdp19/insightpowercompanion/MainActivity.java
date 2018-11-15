@@ -2,6 +2,7 @@ package com.team15.sdp19.insightpowercompanion;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -17,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 * TODO Add Button Interaction
 * TODO Update TextView Field*/
 public class MainActivity extends AppCompatActivity {
+    Random out = new Random();
     private int time = 0;
     private LineGraphSeries<DataPoint> series;
     @Override
@@ -56,7 +58,11 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
     private void addPoint() {
-        series.appendData(new DataPoint(time++, new Random().nextDouble() * 10d),true,100);
+        double nextOut= out.nextDouble();
+        series.appendData(new DataPoint(time++,  nextOut* 10d),true,100);
+        TextView tv = (TextView)findViewById(R.id.text);
+        tv.setText(nextOut*10d+"");
+
     }
     private double powerVal() {
         return 0.0;
