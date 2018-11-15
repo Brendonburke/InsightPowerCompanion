@@ -21,23 +21,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        double time = 0;
+        double time =-10;
         Queue<Double> y = new ArrayDeque<Double>();
-        Object[] data = y.toArray();
-        for(double i=0;i<12
-                ;i++){
-            y.offer(i);
+
+        for(double i=0;i<100;i++){
+            if(i>10){
+                y.remove();
+                y.offer(i);
+            }
+            else y.offer(i);
         }
+        Object[] data = y.toArray();
         GraphView graph = (GraphView) findViewById(R.id.graph);
         graph.getViewport().setXAxisBoundsManual(true);
         graph.getViewport().setMinX(-10);
         graph.getViewport().setMaxX(0);
         series = new LineGraphSeries<>();
-        for(time=-11; time<1; time++){
-            double out = y.poll();
+        for(int x=0; x<11; x++){
+            double out = (double)data[x];
             series.appendData(new DataPoint(time,out),true
                     ,100);
-
+            time++;
         }
         graph.addSeries(series);
     }
