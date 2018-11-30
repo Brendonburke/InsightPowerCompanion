@@ -8,6 +8,7 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.text.DecimalFormat;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Random;
@@ -59,14 +60,12 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
     private void addPoint() {
-        double nextOut= out.nextDouble();
-        series.appendData(new DataPoint(time++,  nextOut* 10d),true,100);
-        TextView tv = (TextView)findViewById(R.id.text);
-        tv.setText(nextOut*10d+"");
+        double nextOut = out.nextDouble();
+        series.appendData(new DataPoint(time++, nextOut * 10d), true, 100);
+        DecimalFormat roundOut = new DecimalFormat("#.###"); //Limit decimal places
+        TextView tv = (TextView) findViewById(R.id.text);
+        tv.setText(roundOut.format(nextOut * 10d) + "W");
 
-    }
-    private double powerVal() {
-        return 0.0;
     }
 }
     /*double time =-10;
