@@ -8,10 +8,14 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.Socket;
 import java.text.DecimalFormat;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 /* Main
@@ -20,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 * TODO Update TextView Field: DONE
 * TODO Raspberry PI communication*/
 public class MainActivity extends AppCompatActivity {
-    Random out = new Random();
+    //Random out = new Random();
     private int time = 0;
     private LineGraphSeries<DataPoint> series;
     @Override
@@ -46,7 +50,12 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            addPoint();
+                            try {
+                                addPoint();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
 
                         }
                     });
@@ -59,15 +68,35 @@ public class MainActivity extends AppCompatActivity {
             }
         }).start();
     }
-    private void addPoint() {
-        double nextOut = out.nextDouble();
+    private void addPoint() throws IOException {
+        Socket sock = new Socket("192.168.1.3", 10568);
+        InputStream in = sock.getInputStream();
+        String out = streamToString(in);
+        sock.close();
+        double nextOut = Double.parseDouble(out);
         series.appendData(new DataPoint(time++, nextOut * 10d), true, 100);
         DecimalFormat roundOut = new DecimalFormat("#.###"); //Limit decimal places
         TextView tv = (TextView) findViewById(R.id.text);
         tv.setText(roundOut.format(nextOut * 10d) + "W");
 
     }
+
+   /* public static void main(String args[]) throws IOException {
+        Socket sock = new Socket("192.168.1.3", 10568);
+        System.out.println("Connected");
+        while (true) {
+            InputStream in = sock.getInputStream();
+            String out = streamToString(in);
+            System.out.println(out);
+
+        }*/
+
+    private static String streamToString(InputStream is){
+        Scanner s = new Scanner(is,"UTF-8").useDelimiter("\n");
+        return s.hasNext() ? s.next() : "0";
+    }
 }
+
     /*double time =-10;
         Queue<Double> y = new ArrayDeque<Double>();
 
