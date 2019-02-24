@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
     public static void scanOutlet() throws XmlRpcException {
         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
         try {
-            URL url = new URL("http://127.0.0.1:10568");
+            URL url = new URL("http://192.168.1.5:10568");
             config.setServerURL(url);
         } catch (MalformedURLException e) {
             e.printStackTrace();
