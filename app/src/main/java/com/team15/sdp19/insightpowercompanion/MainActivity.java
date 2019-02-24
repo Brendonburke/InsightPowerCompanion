@@ -2,11 +2,20 @@ package com.team15.sdp19.insightpowercompanion;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.support.v7.widget.Toolbar;
 
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.XmlRpcRequest;
@@ -39,116 +48,96 @@ import java.util.concurrent.TimeUnit;
 * TODO Update TextView Field: DONE
 * TODO Raspberry PI communication*/
 public class MainActivity extends AppCompatActivity {
-    Random out = new Random();
-    Socket sock;
-    InputStream in;
-    //String out;
-    private int time = 0;
-    private LineGraphSeries<DataPoint> series;
-    XmlRpcClient client = new XmlRpcClient();
-    Object[] param = new Object[0];
-    public Handler m = new Handler();
-    public ArrayList comm = new ArrayList<String>();
-    public MainActivity() throws IOException {
-
-    }
-
+    public static int numOutlets = 0;
+    public static Object[] noParam;
+    public static int outletId;
+    public static Object[] outletArray;
+    public static XmlRpcClient client = new XmlRpcClient();
+    static Toolbar toolbar;
+   // static DrawerLayout drawerLayout;
+    FragmentTransaction fragmentTransaction;
+    static NavigationView navigationView;
+    static int homeId = R.id.home_id;
+    static int scanId = R.id.scan_id;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate (Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        final Button on_off = findViewById(R.id.button);
-        on_off.setOnClickListener(new View.OnClickListener() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        fragmentTransaction= getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.main_container, new HomeFragment());
+        fragmentTransaction.commit();
+        getSupportActionBar().setTitle("Home");
+        navigationView = (NavigationView)findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                try {
-                    client.execute("togglePower",param);
-                } catch (XmlRpcException e) {
-                    e.printStackTrace();
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch(menuItem.getItemId()){
+                    case R.id.home_id:
+                        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.main_container, new HomeFragment());
+                        fragmentTransaction.commit();
+                        getSupportActionBar().setTitle("Home");
+                        menuItem.setChecked(true);
+                        break;
+
+                        case R.id.scan_id :
+                            Thread scan = new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        scanOutlet();
+                                    } catch (XmlRpcException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                            scan.start();
+                        break;
+                        default:
+                        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.main_container, new GraphFragment());
+                        fragmentTransaction.commit();
+                        outletId = menuItem.getItemId();
+                        getSupportActionBar().setTitle("Outlet " + Integer.toString(outletId+1));
+                        menuItem.setChecked(true);
+                        break;
+
                 }
 
+
+                return false;
             }
         });
-        
-        GraphView graph = findViewById(R.id.graph);
-        series = new LineGraphSeries<>();
-        graph.addSeries(series);
-        graph.getViewport().setXAxisBoundsManual(true);
-        graph.getViewport().setMinX(0);
-        graph.getViewport().setMaxX(60);
-        graph.getViewport().setScrollable(true);
-    }
-    @Override
-    protected void onResume(){
-        super.onResume();
 
-
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                while(true){
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                if(comm.isEmpty() == false) {
-                                    Double point = (Double) comm.get(0);
-                                    addPoint(point);
-                                    comm.remove(0);
-                                }
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                }
-            }
-        }).start();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
-                try {
-                    URL url = new URL("http://192.168.1.5:10568");
-                    config.setServerURL(url);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-                client.setConfig(config);
-                while(true) {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    Double in = null;
-                    try {
-                        in = (Double) client.execute("getPoint", param);
-                    } catch (XmlRpcException e1) {
-                        e1.printStackTrace();
-                    }
-                    if(in != -1.0 && in != null) {
-                        comm.add(in);
-                    }
-
-                }
-            }
-        }).start();
-    }
-
-    private void addPoint(Double point) throws IOException {
-        double nextOut = new Double(point);
-        series.appendData(new DataPoint(time++, nextOut ), true, 100);
-        DecimalFormat roundOut = new DecimalFormat("#.###"); //Limit decimal places
-        TextView tv = (TextView) findViewById(R.id.text);
-        tv.setText(roundOut.format(nextOut ) + "W");
 
     }
 
+
+    public static void scanOutlet() throws XmlRpcException {
+        XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+        try {
+            URL url = new URL("http://192.168.1.5:10568");
+            config.setServerURL(url);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        client.setConfig(config);
+        outletArray = (Object[]) client.execute("getOutlets", noParam);
+        numOutlets = outletArray.length;
+        newMenuOptions(numOutlets);
+    }
+
+    public static void newMenuOptions(int x){
+       Menu menu = navigationView.getMenu();
+       menu.clear();
+       menu.add(0,homeId,0,"Home");
+        menu.add(0,scanId,0,"Scan for Outlets");
+        for(int i=0; i<x; i++){
+        menu.add(0,i,0, "Outlet "+Integer.toString(i+1));
+        }
+    }
 
 }
 
