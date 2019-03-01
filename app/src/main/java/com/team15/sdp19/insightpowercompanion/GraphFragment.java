@@ -1,6 +1,8 @@
 package com.team15.sdp19.insightpowercompanion;
 
 
+import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GridLabelRenderer;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
@@ -21,17 +24,28 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class GraphFragment extends Fragment {
-    private LineGraphSeries<DataPoint> series;
-    public ArrayList comm = new ArrayList<String>();
+public class GraphFragment extends Fragment implements View.OnClickListener {
+    int apparentMax=60;
+    private LineGraphSeries<DataPoint> apparentSeries;
+    private LineGraphSeries<DataPoint> activeSeries;
+    public ArrayList apparentComm = new ArrayList<String>();
+    public ArrayList activeComm = new ArrayList<String>();
     int time = 0;
-    String classifcation;
+    View v;
+    String classification;
+    String[] idParam = new String[1];
+    String[] apparentParam = new String[2];
+    String[] activeParam = new String[2];
+    private Activity activity;
+    GraphView graph;
+    int start =0;
+    int end =60;
+
     public GraphFragment() {
         // Required empty public constructor
     }
@@ -41,29 +55,81 @@ public class GraphFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final Button on_off = getView().findViewById(R.id.button);
-        on_off.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    MainActivity.client.execute("togglePower", (List) MainActivity.outletArray[MainActivity.outletId]);
-                } catch (XmlRpcException e) {
-                    e.printStackTrace();
-                }
+        v = inflater.inflate(R.layout.fragment_graph, container, false);
+        Button on_off = v.findViewById(R.id.button);
+        on_off.setOnClickListener(this);
 
-            }
-        });
+        idParam[0] = (String) MainActivity.outletArray[MainActivity.outletId];
 
-        GraphView graph = getView().findViewById(R.id.graph);
-        series = new LineGraphSeries<>();
-        graph.addSeries(series);
+        apparentParam[0] = idParam[0];
+        apparentParam[1] = "apt";
+
+        activeParam[0] = idParam[0];
+        activeParam[1] = "act";
+
+
+
+        graph = v.findViewById(R.id.graph);
+        GridLabelRenderer gridLabel = graph.getGridLabelRenderer();
+        gridLabel.setHorizontalAxisTitle("Time (Seconds)");
+        gridLabel.setVerticalAxisTitle("Apparent Power (VA)");
+
+
+        //Apparent power series
+        apparentSeries = new LineGraphSeries<>();
+        graph.addSeries(apparentSeries);
+
+        //Active power series
+        activeSeries = new LineGraphSeries<>();
+        graph.getSecondScale().addSeries(activeSeries);
+
+        gridLabel.setVerticalLabelsColor(Color.BLUE);
+        apparentSeries.setColor(Color.BLUE);
+
+        gridLabel.setVerticalLabelsSecondScaleColor(Color.RED);
+        activeSeries.setColor(Color.RED);
+        graph.getSecondScale().setVerticalAxisTitle("Active Power (W)");
+        //left Y bounds
+        graph.getViewport().setYAxisBoundsManual(true);
+        graph.getViewport().setMinY(0);
+        graph.getViewport().setMaxY(60);
+
+        //right Y bounds
+        graph.getSecondScale().setMinY(0);
+        graph.getSecondScale().setMaxY(60);
+
+        //X bounds
         graph.getViewport().setXAxisBoundsManual(true);
         graph.getViewport().setMinX(0);
         graph.getViewport().setMaxX(60);
         graph.getViewport().setScrollable(true);
+        return v;
+    }
 
+    @Override
+    public void onClick(final View v){
+        Thread power = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                switch(v.getId()){
+                    case R.id.button:
+                        XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+                        try {
+                            URL url = new URL("http://192.168.0.101:10568");
+                            config.setServerURL(url);
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        }
+                        try {
 
-       return inflater.inflate(R.layout.fragment_graph, container, false);
+                            MainActivity.client.execute("togglePower", apparentParam);
+                        } catch (XmlRpcException e) {
+                            e.printStackTrace();
+                        }
+                }
+            }
+        });
+        power.start();
     }
 
     @Override
@@ -76,14 +142,24 @@ public class GraphFragment extends Fragment {
             @Override
             public void run() {
                 while(true){
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if(getActivity()== null){
+                        break;
+                    }
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             try {
-                                if(comm.isEmpty() == false) {
-                                    Double point = (Double) comm.get(0);
-                                    addPoint(point);
-                                    comm.remove(0);
+                                if(apparentComm.isEmpty() == false && activeComm.isEmpty() == false ) {
+                                    Double apparentPoint = (Double) apparentComm.get(0);
+                                    Double activePoint = (Double) activeComm.get(0);
+                                    addPoint(apparentPoint,activePoint);
+                                    apparentComm.remove(0);
+                                    activeComm.remove(0);
                                 }
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -100,45 +176,79 @@ public class GraphFragment extends Fragment {
 
                 XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
                 try {
-                    URL url = new URL("http://192.168.1.5:10568");
+                    URL url = new URL("http://192.168.0.101:10568");
                     config.setServerURL(url);
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
                 MainActivity.client.setConfig(config);
                 while(true) {
+                    if(getActivity() == null){
+                        break;
+                    }
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    Double in = null;
+                    Double apparentIn = 0.0;
+                    Double activeIn = 0.0;
+
                     try {
-                        in = (Double) MainActivity.client.execute("getPoint", (Object[]) MainActivity.outletArray[MainActivity.outletId]);
+
+                        apparentIn = (Double)MainActivity.client.execute("getPoint", apparentParam);
                     } catch (XmlRpcException e1) {
                         e1.printStackTrace();
                     }
-                    if(in != -1.0 && in != null) {
-                        comm.add(in);
+                    if(apparentIn != -1.0 && apparentIn != null) {
+                        apparentComm.add(apparentIn);
                     }
+
                     try {
-                        classifcation = (String) MainActivity.client.execute("getClassification",(Object[]) MainActivity.outletArray[MainActivity.outletId]);
+
+                        activeIn = (Double)MainActivity.client.execute("getPoint", activeParam);
+                    } catch (XmlRpcException e1) {
+                        e1.printStackTrace();
+                    }
+
+                    if(activeIn != -1.0 && activeIn != null) {
+                        activeComm.add(activeIn);
+                    }
+
+                    try {
+                        classification = (String) MainActivity.client.execute("getClassification",idParam);
                     } catch (XmlRpcException e) {
                         e.printStackTrace();
                     }
-                    TextView type = getView().findViewById(R.id.Classification);
-                    type.setText(classifcation);
+
                 }
             }
         }).start();
     }
 
-    private void addPoint(Double point) throws IOException {
-        double nextOut = new Double(point);
-        series.appendData(new DataPoint(time++, nextOut ), true, 100);
+    private void addPoint(Double apparent, Double active) throws IOException {
+        double nextApparent = new Double(apparent);
+        double nextActive = new Double(active);
+
+        if(nextApparent>apparentMax) {
+            apparentMax = (int) nextApparent;
+            graph.getViewport().setMaxY(apparentMax+20);
+            graph.getSecondScale().setMaxY(apparentMax+20);
+        }
+
+        apparentSeries.appendData(new DataPoint(time++, nextApparent ), false, 100);
+        activeSeries.appendData(new DataPoint(time, nextActive ), false, 100);
+        if(time>= 60){
+            graph.getViewport().setMinX(start++);
+            graph.getViewport().setMaxX(end++);
+        }
         DecimalFormat roundOut = new DecimalFormat("#.###"); //Limit decimal places
-        TextView tv = (TextView) getView().findViewById(R.id.GraphText2);
-        tv.setText(roundOut.format(nextOut ) + "W");
+        TextView apttv =  getView().findViewById(R.id.GraphText2);
+        apttv.setText(roundOut.format(nextApparent ) + "VA");
+        TextView acttv = getView().findViewById(R.id.GraphText4);
+        acttv.setText(roundOut.format(nextActive) + "W");
+        TextView type = getView().findViewById(R.id.Classification);
+        type.setText(classification);
 
     }
 }

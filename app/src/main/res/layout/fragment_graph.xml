@@ -31,9 +31,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="54dp"
-            android:text="Current Power Usage:"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="65dp"
+            android:text="Current Apparent Power:"
             android:textColor="#000" />
 
 
@@ -43,7 +43,31 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/button"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="75dp"
+            android:layout_marginStart="174dp"
+            android:layout_marginBottom="41dp"
+            android:text=""
+            android:textColor="#000" />
+
+        <TextView
+            android:id="@+id/GraphText3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="11dp"
+            android:layout_marginBottom="31dp"
+            android:text="Current Active Power:"
+            android:textColor="#000" />
+
+
+        <TextView
+            android:id="@+id/GraphText4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/button"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="172dp"
+            android:layout_marginBottom="9dp"
             android:text=""
             android:textColor="#000" />
 
@@ -55,19 +79,19 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="-87dp"
             android:text="Identifying..."
+            android:textColor="#000"
             android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="#000"/>
+            android:textStyle="bold" />
 
 
         <com.jjoe64.graphview.GraphView
             android:id="@+id/graph"
-            android:layout_width="match_parent"
-            android:layout_height="401dp"
+            android:layout_width="346dp"
+            android:layout_height="350dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="87dp"
-            android:layout_marginEnd="0dp" />
+            android:layout_marginTop="101dp"
+            android:layout_marginEnd="20dp" />
 
     </RelativeLayout>
 

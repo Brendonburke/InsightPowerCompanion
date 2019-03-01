@@ -1,0 +1,38 @@
+[
+    {
+        "merged": "C:\\Users\\burke\\AndroidStudioProjects\\InsightPowerCompanion\\XMLRPC\\build\\intermediates\\res\\merged\\debug\\drawable_android.png.flat",
+        "source": "C:\\Users\\burke\\AndroidStudioProjects\\InsightPowerCompanion\\XMLRPC\\src\\main\\res\\drawable\\android.png"
+    },
+    {
+        "merged": "C:\\Users\\burke\\AndroidStudioProjects\\InsightPowerCompanion\\XMLRPC\\build\\intermediates\\res\\merged\\debug\\drawable_frame.9.png.flat",
+        "source": "C:\\Users\\burke\\AndroidStudioProjects\\InsightPowerCompanion\\XMLRPC\\src\\main\\res\\drawable\\frame.9.png"
+    },
+    {
+        "merged": "C:\\Users\\burke\\AndroidStudioProjects\\InsightPowerCompanion\\XMLRPC\\build\\intermediates\\res\\merged\\debug\\anim_push_left_out.xml.flat",
+        "source": "C:\\Users\\burke\\AndroidStudioProjects\\InsightPowerCompanion\\XMLRPC\\src\\main\\res\\anim\\push_left_out.xml"
+    },
+    {
+        "merged": "C:\\Users\\burke\\AndroidStudioProjects\\InsightPowerCompanion\\XMLRPC\\build\\intermediates\\res\\merged\\debug\\drawable_error.png.flat",
+        "source": "C:\\Users\\burke\\AndroidStudioProjects\\InsightPowerCompanion\\XMLRPC\\src\\main\\res\\drawable\\error.png"
+    },
+    {
+        "merged": "C:\\Users\\burke\\AndroidStudioProjects\\InsightPowerCompanion\\XMLRPC\\build\\intermediates\\res\\merged\\debug\\layout_main.xml.flat",
+        "source": "C:\\Users\\burke\\AndroidStudioProjects\\InsightPowerCompanion\\XMLRPC\\src\\main\\res\\layout\\main.xml"
+    },
+    {
+        "merged": "C:\\Users\\burke\\AndroidStudioProjects\\InsightPowerCompanion\\XMLRPC\\build\\intermediates\\res\\merged\\debug\\anim_push_left_in.xml.flat",
+        "source": "C:\\Users\\burke\\AndroidStudioProjects\\InsightPowerCompanion\\XMLRPC\\src\\main\\res\\anim\\push_left_in.xml"
+    },
+    {
+        "merged": "C:\\Users\\burke\\AndroidStudioProjects\\InsightPowerCompanion\\XMLRPC\\build\\intermediates\\res\\merged\\debug\\layout_test.xml.flat",
+        "source": "C:\\Users\\burke\\AndroidStudioProjects\\InsightPowerCompanion\\XMLRPC\\src\\main\\res\\layout\\test.xml"
+    },
+    {
+        "merged": "C:\\Users\\burke\\AndroidStudioProjects\\InsightPowerCompanion\\XMLRPC\\build\\intermediates\\res\\merged\\debug\\drawable_back.xml.flat",
+        "source": "C:\\Users\\burke\\AndroidStudioProjects\\InsightPowerCompanion\\XMLRPC\\src\\main\\res\\drawable\\back.xml"
+    },
+    {
+        "merged": "C:\\Users\\burke\\AndroidStudioProjects\\InsightPowerCompanion\\XMLRPC\\build\\intermediates\\res\\merged\\debug\\layout_text_view.xml.flat",
+        "source": "C:\\Users\\burke\\AndroidStudioProjects\\InsightPowerCompanion\\XMLRPC\\src\\main\\res\\layout\\text_view.xml"
+    }
+]

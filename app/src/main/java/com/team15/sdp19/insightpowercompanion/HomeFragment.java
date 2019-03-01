@@ -34,30 +34,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_home, container, false);
-
+        final TextView t = v.findViewById(R.id.text_view_id3);
         Button lightSwitch = (Button) v.findViewById(R.id.button1);
         lightSwitch.setOnClickListener(this);
-
+        t.setText(Integer.toString(MainActivity.numOutlets));
 
         return v;
     }
 
-    @Override
-    public void onResume() {
-        final TextView t = getView().findViewById(R.id.text_view_id3);
-        super.onResume();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                t.setText(Integer.toString(MainActivity.numOutlets));
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
 
     @Override
     public void onClick(final View v){
@@ -68,7 +52,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                    case R.id.button1:
                        XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
                        try {
-                           URL url = new URL("http://192.168.1.5:10568");
+                           URL url = new URL("http://192.168.0.101:10568");
                            config.setServerURL(url);
                        } catch (MalformedURLException e) {
                            e.printStackTrace();
@@ -83,6 +67,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
            }
        });
        lights.start();
-
     }
+
+
 }

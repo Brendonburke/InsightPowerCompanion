@@ -66,6 +66,12 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
                             scan.start();
+                            try {
+                                Thread.sleep(500);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            newMenuOptions(numOutlets);
                         break;
                         default:
                         fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -90,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
     public static void scanOutlet() throws XmlRpcException {
         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
         try {
-            URL url = new URL("http://192.168.1.5:10568");
+            URL url = new URL("http://192.168.0.101:10568");
             config.setServerURL(url);
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -98,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
         client.setConfig(config);
         outletArray = (Object[]) client.execute("getOutlets", noParam);
         numOutlets = outletArray.length;
-        newMenuOptions(numOutlets);
     }
 
     public static void newMenuOptions(int x){
