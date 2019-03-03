@@ -237,8 +237,9 @@ public class GraphFragment extends Fragment implements View.OnClickListener {
             graph.getSecondScale().setMaxY(apparentMax+20);
         }
 
-        apparentSeries.appendData(new DataPoint(time++, nextApparent ), false, 100);
+        apparentSeries.appendData(new DataPoint(time, nextApparent ), false, 100);
         activeSeries.appendData(new DataPoint(time, nextActive ), false, 100);
+        time++;
         if(time>= 60){
             graph.getViewport().setMinX(start++);
             graph.getViewport().setMaxX(end++);
