@@ -84,6 +84,7 @@ public class GraphFragment extends Fragment implements View.OnClickListener {
         graph.getSecondScale().addSeries(activeSeries);
 
         gridLabel.setVerticalLabelsColor(Color.BLUE);
+        gridLabel.setVerticalAxisTitleColor(Color.BLUE);
         apparentSeries.setColor(Color.BLUE);
 
         gridLabel.setVerticalLabelsSecondScaleColor(Color.RED);
@@ -115,7 +116,7 @@ public class GraphFragment extends Fragment implements View.OnClickListener {
                     case R.id.button:
                         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
                         try {
-                            URL url = new URL("http://192.168.0.101:10568");
+                            URL url = new URL("http://192.168.1.19:10568");
                             config.setServerURL(url);
                         } catch (MalformedURLException e) {
                             e.printStackTrace();
@@ -176,7 +177,7 @@ public class GraphFragment extends Fragment implements View.OnClickListener {
 
                 XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
                 try {
-                    URL url = new URL("http://192.168.0.101:10568");
+                    URL url = new URL("http://192.168.1.19:10568");
                     config.setServerURL(url);
                 } catch (MalformedURLException e) {
                     e.printStackTrace();

@@ -25,6 +25,17 @@
             android:layout_marginBottom="24dp"
             android:text="On/Off" />
 
+        <com.team15.sdp19.insightpowercompanion.VerticalTextView
+            android:id="@+id/axis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="215dp"
+            android:layout_marginEnd="0dp"
+            android:text="Active Power (W)"
+            android:textColor="#FF0000" />
+
         <TextView
             android:id="@+id/GraphText"
             android:layout_width="wrap_content"
@@ -34,7 +45,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginBottom="65dp"
             android:text="Current Apparent Power:"
-            android:textColor="#000" />
+            android:textColor="#0000FF" />
 
 
         <TextView
@@ -57,7 +68,7 @@
             android:layout_marginStart="11dp"
             android:layout_marginBottom="31dp"
             android:text="Current Active Power:"
-            android:textColor="#000" />
+            android:textColor="#FF0000" />
 
 
         <TextView
@@ -66,8 +77,8 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/button"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="172dp"
-            android:layout_marginBottom="9dp"
+            android:layout_marginStart="164dp"
+            android:layout_marginBottom="7dp"
             android:text=""
             android:textColor="#000" />
 
