@@ -30,16 +30,16 @@ import java.util.ArrayList;
  * A simple {@link Fragment} subclass.
  */
 public class GraphFragment extends Fragment implements View.OnClickListener {
-    int apparentMax=60;
-    private LineGraphSeries<DataPoint> apparentSeries;
+    int reactiveMax=60;
+    private LineGraphSeries<DataPoint> reactiveSeries;
     private LineGraphSeries<DataPoint> activeSeries;
-    public ArrayList apparentComm = new ArrayList<String>();
+    public ArrayList reactiveComm = new ArrayList<String>();
     public ArrayList activeComm = new ArrayList<String>();
     int time = 0;
     View v;
     String classification;
     String[] idParam = new String[1];
-    String[] apparentParam = new String[2];
+    String[] reactiveParam = new String[2];
     String[] activeParam = new String[2];
     private Activity activity;
     GraphView graph;
@@ -61,8 +61,8 @@ public class GraphFragment extends Fragment implements View.OnClickListener {
 
         idParam[0] = (String) MainActivity.outletArray[MainActivity.outletId];
 
-        apparentParam[0] = idParam[0];
-        apparentParam[1] = "apt";
+        reactiveParam[0] = idParam[0];
+        reactiveParam[1] = "rea";
 
         activeParam[0] = idParam[0];
         activeParam[1] = "act";
@@ -72,12 +72,12 @@ public class GraphFragment extends Fragment implements View.OnClickListener {
         graph = v.findViewById(R.id.graph);
         GridLabelRenderer gridLabel = graph.getGridLabelRenderer();
         gridLabel.setHorizontalAxisTitle("Time (Seconds)");
-        gridLabel.setVerticalAxisTitle("Apparent Power (VA)");
+        gridLabel.setVerticalAxisTitle("Reactive Power (VAR)");
 
 
-        //Apparent power series
-        apparentSeries = new LineGraphSeries<>();
-        graph.addSeries(apparentSeries);
+        //Reactive power series
+        reactiveSeries = new LineGraphSeries<>();
+        graph.addSeries(reactiveSeries);
 
         //Active power series
         activeSeries = new LineGraphSeries<>();
@@ -85,7 +85,7 @@ public class GraphFragment extends Fragment implements View.OnClickListener {
 
         gridLabel.setVerticalLabelsColor(Color.BLUE);
         gridLabel.setVerticalAxisTitleColor(Color.BLUE);
-        apparentSeries.setColor(Color.BLUE);
+        reactiveSeries.setColor(Color.BLUE);
 
         gridLabel.setVerticalLabelsSecondScaleColor(Color.RED);
         activeSeries.setColor(Color.RED);
@@ -116,14 +116,15 @@ public class GraphFragment extends Fragment implements View.OnClickListener {
                     case R.id.button:
                         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
                         try {
-                            URL url = new URL("http://192.168.1.19:10568");
+                            URL url = new URL("http://192.168.0.101:10568");
                             config.setServerURL(url);
                         } catch (MalformedURLException e) {
                             e.printStackTrace();
                         }
                         try {
 
-                            MainActivity.client.execute("togglePower", apparentParam);
+                            MainActivity.client.execute("togglePower", idParam);
+                            MainActivity.client.execute("togglePower", idParam);
                         } catch (XmlRpcException e) {
                             e.printStackTrace();
                         }
@@ -155,11 +156,11 @@ public class GraphFragment extends Fragment implements View.OnClickListener {
                         @Override
                         public void run() {
                             try {
-                                if(apparentComm.isEmpty() == false && activeComm.isEmpty() == false ) {
-                                    Double apparentPoint = (Double) apparentComm.get(0);
+                                if(reactiveComm.isEmpty() == false && activeComm.isEmpty() == false ) {
+                                    Double reactivePoint = (Double) reactiveComm.get(0);
                                     Double activePoint = (Double) activeComm.get(0);
-                                    addPoint(apparentPoint,activePoint);
-                                    apparentComm.remove(0);
+                                    addPoint(reactivePoint,activePoint);
+                                    reactiveComm.remove(0);
                                     activeComm.remove(0);
                                 }
                             } catch (IOException e) {
@@ -177,7 +178,7 @@ public class GraphFragment extends Fragment implements View.OnClickListener {
 
                 XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
                 try {
-                    URL url = new URL("http://192.168.1.19:10568");
+                    URL url = new URL("http://192.168.0.101:10568");
                     config.setServerURL(url);
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
@@ -192,22 +193,22 @@ public class GraphFragment extends Fragment implements View.OnClickListener {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    Double apparentIn = 0.0;
+                    Double reactiveIn = 0.0;
                     Double activeIn = 0.0;
 
                     try {
 
-                        apparentIn = (Double)MainActivity.client.execute("getPoint", apparentParam);
+                        reactiveIn = (Double)  MainActivity.client.execute("getPoint", reactiveParam);
                     } catch (XmlRpcException e1) {
                         e1.printStackTrace();
                     }
-                    if(apparentIn != -1.0 && apparentIn != null) {
-                        apparentComm.add(apparentIn);
+                    if(reactiveIn != -1.0 && reactiveIn != null) {
+                        reactiveComm.add(reactiveIn);
                     }
 
                     try {
 
-                        activeIn = (Double)MainActivity.client.execute("getPoint", activeParam);
+                        activeIn = (Double) MainActivity.client.execute("getPoint", activeParam);
                     } catch (XmlRpcException e1) {
                         e1.printStackTrace();
                     }
@@ -227,17 +228,17 @@ public class GraphFragment extends Fragment implements View.OnClickListener {
         }).start();
     }
 
-    private void addPoint(Double apparent, Double active) throws IOException {
-        double nextApparent = new Double(apparent);
+    private void addPoint(Double reactive, Double active) throws IOException {
+        double nextReactive = new Double(reactive);
         double nextActive = new Double(active);
 
-        if(nextApparent>apparentMax) {
-            apparentMax = (int) nextApparent;
-            graph.getViewport().setMaxY(apparentMax+20);
-            graph.getSecondScale().setMaxY(apparentMax+20);
+        if(nextReactive>reactiveMax) {
+            reactiveMax = (int) nextReactive;
+            graph.getViewport().setMaxY(reactiveMax+20);
+            graph.getSecondScale().setMaxY(reactiveMax+20);
         }
 
-        apparentSeries.appendData(new DataPoint(time, nextApparent ), false, 100);
+        reactiveSeries.appendData(new DataPoint(time, nextReactive ), false, 100);
         activeSeries.appendData(new DataPoint(time, nextActive ), false, 100);
         time++;
         if(time>= 60){
@@ -246,7 +247,7 @@ public class GraphFragment extends Fragment implements View.OnClickListener {
         }
         DecimalFormat roundOut = new DecimalFormat("#.###"); //Limit decimal places
         TextView apttv =  getView().findViewById(R.id.GraphText2);
-        apttv.setText(roundOut.format(nextApparent ) + "VA");
+        apttv.setText(roundOut.format(nextReactive ) + "VAR");
         TextView acttv = getView().findViewById(R.id.GraphText4);
         acttv.setText(roundOut.format(nextActive) + "W");
         TextView type = getView().findViewById(R.id.Classification);

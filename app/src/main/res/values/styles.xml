@@ -10,6 +10,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="drawerArrowStyle">@style/MaterialDrawer.DrawerArrowStyle</item>
+        <item name="android:navigationBarColor">@color/InsightGreen</item>
     </style>
     <!--use item name="drawerArrowStyle" if you are using dark primaryColor in your app, else remove it-->
     <style name="MaterialDrawer.DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">

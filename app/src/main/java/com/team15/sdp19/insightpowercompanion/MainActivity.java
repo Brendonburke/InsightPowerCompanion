@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     public static Object[] noParam;
     public static int outletId;
     public static Object[] outletArray;
+    public static boolean[] light;
     public static XmlRpcClient client = new XmlRpcClient();
     static Toolbar toolbar;
    // static DrawerLayout drawerLayout;
@@ -93,10 +94,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     public static void scanOutlet() throws XmlRpcException {
         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
         try {
-            URL url = new URL("http://192.168.1.19:10568");
+            URL url = new URL("http://192.168.0.101:10568");
             config.setServerURL(url);
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -104,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
         client.setConfig(config);
         outletArray = (Object[]) client.execute("getOutlets", noParam);
         numOutlets = outletArray.length;
+        light = new boolean[numOutlets];
     }
 
     public static void newMenuOptions(int x){
