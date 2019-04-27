@@ -14,8 +14,8 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.team15.sdp19.insightpowercompanion"
-        minSdkVersion 23
-        targetSdkVersion 23
+        minSdkVersion 22
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/InsightGrey"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".GraphFragment">
@@ -32,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="215dp"
+            android:layout_marginTop="386dp"
             android:layout_marginEnd="0dp"
             android:text="Active Power (W)"
             android:textColor="#FF0000" />
@@ -98,12 +97,12 @@
 
         <com.jjoe64.graphview.GraphView
             android:id="@+id/graph"
-            android:layout_width="346dp"
-            android:layout_height="350dp"
+            android:layout_width="574dp"
+            android:layout_height="649dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="101dp"
-            android:layout_marginEnd="20dp" />
+            android:layout_marginTop="110dp"
+            android:layout_marginEnd="15dp" />
 
     </RelativeLayout>
 

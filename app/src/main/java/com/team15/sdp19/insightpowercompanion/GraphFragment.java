@@ -30,7 +30,7 @@ import java.util.ArrayList;
  * A simple {@link Fragment} subclass.
  */
 public class GraphFragment extends Fragment implements View.OnClickListener {
-    int reactiveMax=60;
+    double reactiveMax=200.0;
     private LineGraphSeries<DataPoint> reactiveSeries;
     private LineGraphSeries<DataPoint> activeSeries;
     public ArrayList reactiveComm = new ArrayList<String>();
@@ -93,11 +93,11 @@ public class GraphFragment extends Fragment implements View.OnClickListener {
         //left Y bounds
         graph.getViewport().setYAxisBoundsManual(true);
         graph.getViewport().setMinY(0);
-        graph.getViewport().setMaxY(60);
+        graph.getViewport().setMaxY(200);
 
         //right Y bounds
         graph.getSecondScale().setMinY(0);
-        graph.getSecondScale().setMaxY(60);
+        graph.getSecondScale().setMaxY(200);
 
         //X bounds
         graph.getViewport().setXAxisBoundsManual(true);
@@ -116,14 +116,13 @@ public class GraphFragment extends Fragment implements View.OnClickListener {
                     case R.id.button:
                         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
                         try {
-                            URL url = new URL("http://192.168.0.101:10568");
+                            URL url = new URL("http://192.168.0.5:10568");
                             config.setServerURL(url);
                         } catch (MalformedURLException e) {
                             e.printStackTrace();
                         }
                         try {
 
-                            MainActivity.client.execute("togglePower", idParam);
                             MainActivity.client.execute("togglePower", idParam);
                         } catch (XmlRpcException e) {
                             e.printStackTrace();
@@ -178,7 +177,7 @@ public class GraphFragment extends Fragment implements View.OnClickListener {
 
                 XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
                 try {
-                    URL url = new URL("http://192.168.0.101:10568");
+                    URL url = new URL("http://192.168.0.5:10568");
                     config.setServerURL(url);
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
